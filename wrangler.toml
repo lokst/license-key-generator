@@ -1,0 +1,12 @@
+name = "license-key-generator"
+type = "javascript"
+zone_id = ""
+account_id = ""
+route = ""
+workers_dev = true
+compatibility_date = "2021-10-26"
+
+[build]
+command = "npm install && npm run build"
+[build.upload]
+format = "service-worker"
