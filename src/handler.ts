@@ -13,12 +13,13 @@ export async function handleRequest(request: Request): Promise<Response> {
     // @ts-ignore
     const userId = inputJson["userId"];
 
-    if (getLicenseKey(userId)) {
+    const existingLicenseKey = await getLicenseKey(userId);
+    if (existingLicenseKey) {
       return new Response("License key already exists", { status: 400 });
     }
 
     const licenseKey = uuidv4();
-    setLicenseKey(userId, licenseKey);
+    await setLicenseKey(userId, licenseKey);
     const responseData = {
       licenseKey
     }
@@ -33,7 +34,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     const userId = inputJson["userId"];
     // @ts-ignore
     const licenseKey = inputJson["licenseKey"];
-    const savedLicenseKey = getLicenseKey(userId);
+    const savedLicenseKey = await getLicenseKey(userId);
     const valid = licenseKey && licenseKey === savedLicenseKey;
     const responseData = {
       "valid": valid,
