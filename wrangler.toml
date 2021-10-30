@@ -1,10 +1,12 @@
 name = "license-key-generator"
 type = "javascript"
-zone_id = ""
-account_id = ""
-route = ""
+account_id = "ffd2b615a4ba80f2747e7da39cc3c05f"
 workers_dev = true
 compatibility_date = "2021-10-26"
+
+kv_namespaces = [
+  { binding = "LICENSE_STORE", id = "cacf3568ef5345189b1e9360e901229e", preview_id = "f2a233f34b4444e4afb22fffb767c348" }
+]
 
 [build]
 command = "npm install && npm run build"
