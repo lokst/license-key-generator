@@ -14,7 +14,7 @@ describe('/generate', () => {
   beforeEach(() => {
     global.LICENSE_STORE = {
       get: jest.fn(() => null),
-      put: jest.fn(() => "AAAA-AAAA-AAAA-AAAA"),
+      put: jest.fn(),
     };
   });
 
@@ -27,7 +27,7 @@ describe('/generate', () => {
     expect(result.status).toEqual(200);
     const resultObj = await result.json();
     // @ts-ignore
-    expect(resultObj["userId"]).toEqual("foo");
+    expect(resultObj["licenseKey"]).not.toBeNull();
   });
 
   describe('disallows regeneration', () => {
@@ -59,7 +59,7 @@ describe('/verify', () => {
   });
 
   test('verifies a valid license key', async () => {
-    const result = await handleRequest(new Request('/verify', { method: 'GET', body: JSON.stringify({ userId: "foo", licenseKey: "AAAA-AAAA-AAAA-AAAA" }), }))
+    const result = await handleRequest(new Request('/verify', { method: 'POST', body: JSON.stringify({ userId: "foo", licenseKey: "AAAA-AAAA-AAAA-AAAA" }), }))
     expect(result.status).toEqual(200);
     const resultObj = await result.json();
     // @ts-ignore
