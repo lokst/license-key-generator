@@ -3,30 +3,66 @@ import makeServiceWorkerEnv from 'service-worker-mock'
 
 declare var global: any
 
-global.LICENSE_STORE = {
-  get: jest.fn(() => "AAAA-AAAA-AAAA-AAAA"),
-  put: jest.fn(() => "AAAA-AAAA-AAAA-AAAA"),
-};
 
-describe('handle', () => {
+
+beforeEach(() => {
+  Object.assign(global, makeServiceWorkerEnv())
+  jest.resetModules()
+})
+
+describe('/generate', () => {
   beforeEach(() => {
-    Object.assign(global, makeServiceWorkerEnv())
-    jest.resetModules()
-  })
+    global.LICENSE_STORE = {
+      get: jest.fn(() => null),
+      put: jest.fn(() => "AAAA-AAAA-AAAA-AAAA"),
+    };
+  });
 
-  test('handle /generate', async () => {
+  afterAll(() => {
+    global.LICENSE_STORE = null;
+  });
+
+  test('generates a license key', async () => {
     const result = await handleRequest(new Request('/generate', { method: 'POST', body: JSON.stringify({ userId: "foo" }), }))
     expect(result.status).toEqual(200);
     const resultObj = await result.json();
     // @ts-ignore
     expect(resultObj["userId"]).toEqual("foo");
-  })
+  });
 
-  test('handle /verify', async () => {
+  describe('disallows regeneration', () => {
+    beforeEach(() => {
+      global.LICENSE_STORE = {
+        get: jest.fn(() => "AAAA-AAAA-AAAA-AAAA"),
+      };
+    });
+
+    test('returns an error', async () => {
+      const result = await handleRequest(new Request('/generate', { method: 'POST', body: JSON.stringify({ userId: "foo" }), }))
+      expect(result.status).toEqual(400);
+      const errorMessage = await result.text();
+      expect(errorMessage).toEqual("License key already exists");
+    });
+  });
+});
+
+describe('/verify', () => {
+  beforeEach(() => {
+    global.LICENSE_STORE = {
+      get: jest.fn(() => "AAAA-AAAA-AAAA-AAAA"),
+      put: jest.fn(() => "AAAA-AAAA-AAAA-AAAA"),
+    };
+  });
+
+  afterAll(() => {
+    global.LICENSE_STORE = null;
+  });
+
+  test('verifies a valid license key', async () => {
     const result = await handleRequest(new Request('/verify', { method: 'GET', body: JSON.stringify({ userId: "foo", licenseKey: "AAAA-AAAA-AAAA-AAAA" }), }))
     expect(result.status).toEqual(200);
     const resultObj = await result.json();
     // @ts-ignore
     expect(resultObj["valid"]).toEqual(true);
-  })
-})
+  });
+});

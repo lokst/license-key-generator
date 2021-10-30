@@ -14,7 +14,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     const userId = inputJson["userId"];
 
     if (getLicenseKey(userId)) {
-      return new Response("License key already exists");
+      return new Response("License key already exists", { status: 400 });
     }
 
     const licenseKey = uuidv4();
@@ -47,7 +47,7 @@ export async function handleRequest(request: Request): Promise<Response> {
 
   }
   else {
-    return new Response("Invalid request type");
+    return new Response("Invalid request type", { status: 400 });
   }
 
 }
