@@ -12,10 +12,14 @@ export async function handleRequest(request: Request): Promise<Response> {
     const inputJson:Object = await request.json();
     // @ts-ignore
     const userId = inputJson["userId"];
+
+    if (getLicenseKey(userId)) {
+      return new Response("License key already exists", { status: 400 });
+    }
+
     const licenseKey = uuidv4();
     setLicenseKey(userId, licenseKey);
     const responseData = {
-      userId,
       licenseKey
     }
     return new Response(JSON.stringify(responseData, null, 2), {
@@ -42,7 +46,7 @@ export async function handleRequest(request: Request): Promise<Response> {
 
   }
   else {
-    return new Response(`error request method: ${request.method}`)
+    return new Response("Invalid request type", { status: 400 });
   }
 
 }
