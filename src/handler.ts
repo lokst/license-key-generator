@@ -20,7 +20,6 @@ export async function handleRequest(request: Request): Promise<Response> {
     const licenseKey = uuidv4();
     setLicenseKey(userId, licenseKey);
     const responseData = {
-      userId,
       licenseKey
     }
     return new Response(JSON.stringify(responseData, null, 2), {
