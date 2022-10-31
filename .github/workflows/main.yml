@@ -27,3 +27,7 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+    - name: openapi lint
+      uses: trybeapp/redocly-openapi-cli-github-action@v0.0.1
+      with:
+        args: 'lint openapi.yaml'
