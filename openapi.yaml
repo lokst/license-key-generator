@@ -1,0 +1,100 @@
+openapi: 3.0.3
+info:
+  title: License Key Generator
+  description: |-
+    This is a sample License Key Generator based on the OpenAPI 3.0 specification.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1
+externalDocs:
+  description: GitHub repository
+  url: https://github.com/lokst/license-key-generator
+tags:
+  - name: license
+    description: Everything about your license
+paths:
+  /generate:
+    post:
+      tags:
+        - license
+      summary: Generate a new license key
+      description: Generates a license key for the given user id
+      operationId: createLicenseKey
+      requestBody:
+        description: Generates a license key for the given user id
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+        '400':
+          description: License key already exists for the user
+  /verify:
+    post:
+      tags:
+        - license
+      summary: Verifies a license key
+      description: Verifies the validity of a user's license key
+      operationId: verifyLicenseKey
+      requestBody:
+        description: Verifies the validity of a a license key for the given user id
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicenseVerification'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseStatus'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: myuser
+    License:
+      type: object
+      properties:
+        licenseKey:
+          type: string
+          example: "AAAA-BBBB-CCCC-DDDD"
+    LicenseVerification:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: myuser
+        licenseKey:
+          type: string
+          example: "AAAA-BBBB-CCCC-DDDD"
+    LicenseStatus:
+      type: object
+      properties:
+        valid:
+          type: boolean
+  requestBodies:
+    User:
+      description: User object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    LicenseVerification:
+      description: LicenseVerification
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LicenseVerification'
+ 
